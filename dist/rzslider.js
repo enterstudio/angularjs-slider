@@ -1,7 +1,7 @@
 /*! angularjs-slider - v2.6.0 - 
  (c) Rafal Zajac <rzajac@gmail.com>, Valentin Hervieu <valentin@hervieu.me>, Jussi Saarivirta <jusasi@gmail.com>, Angelin Sirbu <angelin.sirbu@gmail.com> - 
  https://github.com/angular-slider/angularjs-slider - 
- 2016-01-31 */
+ 2016-02-02 */
 /*jslint unparam: true */
 /*global angular: false, console: false, define, module */
 (function(root, factory) {
@@ -1086,6 +1086,11 @@
        * @returns {number}
        */
       valueToOffset: function(val) {
+        if(this.options.logScale) {
+          var a = this.options.logScale > 0 ? this.options.logScale : 1;
+          return Math.log(1 + a * (this.sanitizeValue(val) - this.minValue) / this.valueRange) * this.maxPos / Math.log(a + 1) || 0;
+        }
+
         return (this.sanitizeValue(val) - this.minValue) * this.maxPos / this.valueRange || 0;
       },
 
@@ -1106,6 +1111,11 @@
        * @returns {number}
        */
       offsetToValue: function(offset) {
+        if(this.options.logScale) {
+          var a = this.options.logScale > 0 ? this.options.logScale : 1;
+          return this.valueRange / a * (Math.exp(Math.log(a + 1) * offset / this.maxPos) - 1 ) + this.minValue;
+        }
+
         return (offset / this.maxPos) * this.valueRange + this.minValue;
       },
 

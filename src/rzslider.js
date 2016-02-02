@@ -1091,7 +1091,7 @@
        */
       valueToOffset: function(val) {
         if(this.options.logScale) {
-          let a = this.options.logScale > 0 ? this.options.logScale : 1;
+          var a = this.options.logScale > 0 ? this.options.logScale : 1;
           return Math.log(1 + a * (this.sanitizeValue(val) - this.minValue) / this.valueRange) * this.maxPos / Math.log(a + 1) || 0;
         }
 
@@ -1116,7 +1116,7 @@
        */
       offsetToValue: function(offset) {
         if(this.options.logScale) {
-          let a = this.options.logScale > 0 ? this.options.logScale : 1;
+          var a = this.options.logScale > 0 ? this.options.logScale : 1;
           return this.valueRange / a * (Math.exp(Math.log(a + 1) * offset / this.maxPos) - 1 ) + this.minValue;
         }
 
