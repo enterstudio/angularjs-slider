@@ -1084,7 +1084,7 @@
       },
 
       /**
-       * Translate value to pixel offset
+       * Translate value to pixel offset according to basic, log or piecewise scale
        *
        * @param {number} val
        * @returns {number}
@@ -1093,6 +1093,11 @@
         if(this.options.logScale) {
           var a = this.options.logScale > 0 ? this.options.logScale : 1;
           return Math.log(1 + a * (this.sanitizeValue(val) - this.minValue) / this.valueRange) * this.maxPos / Math.log(a + 1) || 0;
+        }
+        if(this.options.piecewiseScale) {
+          var valuePc = 100 * (this.sanitizeValue(val) - this.minValue) / this.valueRange || 0;
+          var offsetPc = this.piecewiseConvert(valuePc, this.options.piecewiseScale);
+          return offsetPc * this.maxPos / 100;
         }
 
         return (this.sanitizeValue(val) - this.minValue) * this.maxPos / this.valueRange || 0;
@@ -1119,8 +1124,34 @@
           var a = this.options.logScale > 0 ? this.options.logScale : 1;
           return this.valueRange / a * (Math.exp(Math.log(a + 1) * offset / this.maxPos) - 1 ) + this.minValue;
         }
+        if(this.options.piecewiseScale) {
+          var offsetPc = 100 * (offset) / this.maxPos || 0;
+          var valuePc = this.piecewiseConvert(offsetPc, this.options.piecewiseScale, true);
+          return valuePc * (this.maxValue - this.minValue) / 100;
+        }
 
         return (offset / this.maxPos) * this.valueRange + this.minValue;
+      },
+
+      /**
+       * Interpolates 0-100 input in the scale and returns 0-100 result
+       * @param  {number} percentage the input percentage
+       * @param  {Object} scaleObj   an array with input percentage as keys and corresponding output percentages as values
+       * @return {number}            the linear-interpolated percentage
+       */
+      piecewiseConvert: function(percentage, scaleObj, reverse) {
+        scaleObj[0] = 0; scaleObj[100] = 100;
+        var keys = Object.keys(scaleObj).map(function(k) { return parseInt(k)});
+        var values = keys.map(function (key) { return parseInt(scaleObj[key]); });
+        if(reverse) {
+          var tmp = keys.slice();
+          keys = values.slice();
+          values = tmp;
+        }
+        var i = 0;
+        while(keys[i] <= percentage) i++;
+        if(values[i] == values[i-1]) throw new Error('Piecewise scale configuration object cannot have duplicate values');
+        return parseFloat(values[i-1] + (values[i] - values[i - 1]) / (keys[i] - keys[i - 1]) * (percentage - keys[i-1]));
       },
 
       // Events
