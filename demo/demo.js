@@ -6,6 +6,20 @@ app.controller('MainCtrl', function($scope, $rootScope, $timeout, $modal) {
     value: 10
   };
 
+  //piecewise slider config
+  $scope.pwSlider = {
+    value: 10,
+    options: {
+      floor: 0,
+      ceil: 100,
+      step: 1,
+      piecewiseScale: {
+        10: 80,
+        20: 90
+      }
+    }
+  };
+
   //Range slider config
   $scope.rangeSlider = {
     minValue: 10,
