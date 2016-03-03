@@ -1133,7 +1133,7 @@
        * Interpolates 0-100 input in the scale and returns 0-100 result
        * @param  {number} percentage the input percentage
        * @param  {Object} scaleObj   an array with input percentage as keys and corresponding output percentages as values
-       * @param  {boolean} reverse   true to switch the keys and values of the scaleObj
+       * @param  {boolean} reverse   true to switch the keys and values of the scaleObj, to do the reverse conversion
        * @return {number}            the linear-interpolated percentage
        */
       piecewiseConvert: function(percentage, scaleObj, reverse) {
