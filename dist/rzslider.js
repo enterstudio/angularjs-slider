@@ -1121,9 +1121,9 @@
           return this.valueRange / a * (Math.exp(Math.log(a + 1) * offset / this.maxPos) - 1 ) + this.minValue;
         }
         if(this.options.piecewiseScale) {
-          var offsetPc = 100 * (offset) / this.maxPos || 0;
+          var offsetPc = (100 * offset / this.maxPos) || 0;
           var valuePc = this.piecewiseConvert(offsetPc, this.options.piecewiseScale, true);
-          return valuePc * (this.maxValue - this.minValue) / 100;
+          return this.minValue + valuePc * (this.maxValue - this.minValue) / 100;
         }
 
         return (offset / this.maxPos) * this.valueRange + this.minValue;
@@ -1138,8 +1138,8 @@
        */
       piecewiseConvert: function(percentage, scaleObj, reverse) {
         scaleObj[0] = 0; scaleObj[100] = 100;
-        var keys = Object.keys(scaleObj).map(function(k) { return parseInt(k)});
-        var values = keys.map(function (key) { return parseInt(scaleObj[key]); });
+        var keys = Object.keys(scaleObj).map(parseFloat);
+        var values = keys.map(function (key) { return parseFloat(scaleObj[key]); });
         if(reverse) {
           var tmp = keys.slice();
           keys = values.slice();
@@ -1147,7 +1147,8 @@
         }
         var i = 0;
         while(keys[i] <= percentage) i++;
-        if(values[i] == values[i-1]) throw new Error('Piecewise scale configuration object cannot have duplicate values');
+        if (keys[i-1] == percentage) return values[i-1];
+        if (values[i] == values[i-1]) throw new Error('Piecewise scale configuration object cannot have duplicate values');
         return parseFloat(values[i-1] + (values[i] - values[i - 1]) / (keys[i] - keys[i - 1]) * (percentage - keys[i-1]));
       },
 

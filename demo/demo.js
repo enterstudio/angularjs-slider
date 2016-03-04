@@ -7,15 +7,28 @@ app.controller('MainCtrl', function($scope, $rootScope, $timeout, $modal) {
   };
 
   //piecewise slider config
-  $scope.pwSlider = {
-    value: 10,
+  $scope.logSlider = {
+    minValue: 10,
+    maxValue: 50,
     options: {
-      floor: 0,
-      ceil: 100,
+      floor: 3,
+      ceil: 70,
+      step: 1,
+      logScale: 10
+    }
+  };
+
+  //piecewise slider config
+  $scope.pwSlider = {
+    minValue: 10,
+    maxValue: 50,
+    options: {
+      floor: 3,
+      ceil: 70,
       step: 1,
       piecewiseScale: {
-        10: 80,
-        20: 90
+        80: 10,
+        90: 20
       }
     }
   };
